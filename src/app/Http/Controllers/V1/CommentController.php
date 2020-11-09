@@ -13,10 +13,19 @@ class CommentController extends Controller
      *
      * @return JsonResponse
      */
-    public function index()
+    public function index($user, $post, $comment)
     {
+        if (!is_numeric($comment)) {
+            return response()->json([
+                'data' => 'error'
+            ], 400);
+        }
+
         return response()->json([
-            'data' => 'ok index'
+            'data' => 'ok show',
+            'profileId' => $user,
+            'postId' => $post,
+            'commentId' => $comment
         ], 200);
     }
 
@@ -38,10 +47,19 @@ class CommentController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store($user, $post, $comment)
     {
+        if (!is_numeric($comment)) {
+            return response()->json([
+                'data' => 'error'
+            ], 404);
+        }
+
         return response()->json([
-            'data' => 'ok post'
+            'data' => 'ok updated',
+            'profileId' => $user,
+            'postId' => $post,
+            'commentId' => $comment
         ], 200);
     }
 
@@ -91,10 +109,19 @@ class CommentController extends Controller
      * @param  int  $id
      * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy($user, $post, $comment)
     {
+        if (!is_numeric($comment)) {
+            return response()->json([
+                'data' => 'error'
+            ], 400);
+        }
+
         return response()->json([
-            'data' => 'ok destroy'
-        ], 200);
+            'data' => 'ok destroyed',
+            'profileId' => $user,
+            'postId' => $post,
+            'commentId' => $comment
+        ], 204);
     }
 }

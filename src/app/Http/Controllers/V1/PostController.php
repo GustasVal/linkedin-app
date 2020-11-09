@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Post;
+use App\Models\Profile;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -14,10 +16,18 @@ class PostController extends Controller
      *
      * @return JsonResponse
      */
-    public function index()
+    public function index($user, $post)
     {
+        if (!is_numeric($post)) {
+            return response()->json([
+                'data' => 'error'
+            ], 400);
+        }
+
         return response()->json([
-            'data' => 'ok index'
+            'data' => 'ok show',
+            'profileId' => $user,
+            'postId' => $post
         ], 200);
     }
 
@@ -39,23 +49,32 @@ class PostController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store($user, $post)
     {
+        if (!is_numeric($post)) {
+            return response()->json([
+                'data' => 'error'
+            ], 404);
+        }
+
         return response()->json([
-            'data' => 'ok post'
+            'data' => 'ok updated',
+            'profileId' => $user,
+            'postId' => $post
         ], 200);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
      * @return JsonResponse
      */
-    public function show($id)
+    public function show($user, $post)
     {
         return response()->json([
-            'data' => 'ok show'
+            'data' => 'ok show',
+            'profileId' => $user,
+            'postId' => $post
         ], 200);
     }
 
@@ -92,10 +111,18 @@ class PostController extends Controller
      * @param  int  $id
      * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy($user, $post)
     {
+        if (!is_numeric($post)) {
+            return response()->json([
+                'data' => 'error'
+            ], 400);
+        }
+
         return response()->json([
-            'data' => 'ok destroy'
-        ], 200);
+            'data' => 'ok destroyed',
+            'profileId' => $user,
+            'postId' => $post,
+        ], 204);
     }
 }
