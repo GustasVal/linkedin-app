@@ -3,22 +3,27 @@
 namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Jwt;
+use App\Models\LinkedinOAuth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Session;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return JsonResponse
-     */
     public function index()
     {
-        return response()->json([
-            'data' => 'ok index'
-        ], 200);
+        /**
+         * @todo
+         * Move this to middleware
+         */
+        $sessionId = (new Jwt)->retrieveSessionId(\Illuminate\Support\Facades\Request::bearerToken());
+
+        Session::setId($sessionId);
+
+        return Http::withToken(Session::get('linkedin_access'))->get(LinkedinOAuth::PROFILE_LINK);
     }
 
     /**

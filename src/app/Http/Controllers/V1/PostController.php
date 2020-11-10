@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Post;
-use App\Models\Profile;
+use App\Models\LinkedinOAuth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Http;
 
 class PostController extends Controller
 {
@@ -31,16 +30,25 @@ class PostController extends Controller
         ], 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return JsonResponse
-     */
-    public function create()
+    public function create(Request $request)
     {
-        return response()->json([
-            'data' => 'ok create'
-        ], 200);
+        $user = Http::get(route('profile.index'));
+
+        return Http::withToken(session('linkedin_access'))->post(LinkedinOAuth::SHARE_LINK, [
+            'author' => "urn:li:person:{$user['id']}",
+            'lifecycleState' => "PUBLISHED",
+            'specificContent' => [
+                'com.linkedin.ugc.ShareContent' => [
+                    'shareCommentary' => [
+                        "text" => "Hello World! This is my first Share on LinkedIn!"
+                    ],
+                    'shareMediaCategory' => "NONE"
+                ]
+            ],
+            'visibility' => [
+                'com.linkedin.ugc.MemberNetworkVisibility' => 'PUBLIC'
+            ]
+        ]);
     }
 
     /**

@@ -23,7 +23,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::group(['prefix' => 'v1'], function () {
-    Route::get('login', [AuthController::class, 'requestAuthorizationCode']);
+    Route::group(['prefix' => 'auth'], function () {
+        Route::get('', [AuthController::class, 'authorizeClient']);
+        Route::get('callback', [AuthController::class, 'getAccessToken'])->name('access-token');
+    });
 
     Route::resources([
         'profile' => ProfileController::class
