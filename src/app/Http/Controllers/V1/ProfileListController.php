@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\V1\V1;
+namespace App\Http\Controllers\V1;
 
-use App\Http\Controllers\V1\Controller;
-use App\Models\Profile;
+use App\Http\Controllers\Controller;
+use App\Models\ProfileList;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class ProfileController extends Controller
+class ProfileListController extends Controller
 {
     public function index(User $user): JsonResponse
     {
@@ -29,26 +29,23 @@ class ProfileController extends Controller
     {
         $data = $request->all();
 
-        if (!isset($data['email']) || !isset($data['address'])) {
+        if (!isset($data['list'])) {
             return response()->json([
                 'data' => 'Some data is missing'
             ], 400);
         }
 
-        $profile = new Profile();
-        $profile->user_id = $user->id;
-        $profile->email = $request->input('email', '');
-        $profile->last_name = $request->input('last_name', '');
-        $profile->address = $request->input('address', '');
-        $profile->number = $request->input('number', '');
-        $profile->save();
+        $list = new ProfileList();
+        $list->owner_user_id = $user->id;
+        $list->list = $data['list'];
+        $list->save();
 
         return response()->json([
-            'data' => 'Profile has been created'
+            'data' => 'Profile list has been created'
         ], 200);
     }
 
-    public function show(User $user, Profile $profile): JsonResponse
+    public function show(User $user, ProfileList $profileList): JsonResponse
     {
         return response()->json([
             'data' => 'Ok',
@@ -57,7 +54,7 @@ class ProfileController extends Controller
         ], 200);
     }
 
-    public function edit(User $user, Profile $profile): JsonResponse
+    public function edit(User $user, ProfileList $profileList): JsonResponse
     {
         return response()->json([
             'data' => 'Ok',
@@ -66,30 +63,27 @@ class ProfileController extends Controller
         ], 200);
     }
 
-    public function update(User $user, Profile $profile, Request $request): JsonResponse
+    public function update(User $user, ProfileList $profileList, Request $request): JsonResponse
     {
         $data = $request->all();
 
-        if (!isset($data['email']) || !isset($data['address'])) {
+        if (!isset($data['list'])) {
             return response()->json([
                 'data' => 'Some data is missing'
             ], 400);
         }
 
-        $profile->email = $request->input('email', '');
-        $profile->last_name = $request->input('last_name', '');
-        $profile->address = $request->input('address', '');
-        $profile->number = $request->input('number', '');
-        $profile->save();
+        $profileList->list = $data['list'];
+        $profileList->save();
 
         return response()->json([
             'data' => 'Updated'
         ], 200);
     }
 
-    public function destroy(User $user, Profile $profile): JsonResponse
+    public function destroy(User $user, ProfileList $profileList): JsonResponse
     {
-        $profile->delete();
+        $profileList->delete();
 
         return response()->json([
             'data' => 'Deleted',

@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\V1\AuthController;
-use App\Http\Controllers\V1\CommentController;
-use App\Http\Controllers\V1\PostController;
-use App\Http\Controllers\V1\ProfileController;
+use App\Http\Controllers\V1\V1\AuthController;
+use App\Http\Controllers\V1\V1\CommentController;
+use App\Http\Controllers\V1\V1\PostController;
+use App\Http\Controllers\V1\V1\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,15 +28,11 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('callback', [AuthController::class, 'getAccessToken'])->name('access-token');
     });
 
-    Route::resources([
-        'profile' => ProfileController::class
-    ]);
+    Route::middleware(['auth', 'api'])->group(function () {
+        Route::resource('users.profile', ProfileController::class);
+        Route::resource('users.posts', PostController::class);
+//        Route::resource('profile-list.posts', );
+        Route::resource('users.posts.comments', CommentController::class);
+    });
 
-    Route::get('/{profile}/posts/{post}', [PostController::class, 'index']);
-    Route::put('/{profile}/posts/{post}', [PostController::class, 'store']);
-    Route::delete('/{profile}/posts/{post}', [PostController::class, 'destroy']);
-
-    Route::get('/{profile}/posts/{post}/comments/{comment}', [CommentController::class, 'index']);
-    Route::put('/{profile}/posts/{post}/comments/{comment}', [CommentController::class, 'store']);
-    Route::delete('/{profile}/posts/{post}/comments/{comment}', [CommentController::class, 'destroy']);
 });

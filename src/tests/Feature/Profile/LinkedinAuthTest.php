@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Profile;
 
-use App\Http\Controllers\V1\AuthController;
-use App\Models\LinkedinOAuth;
+use App\Http\Controllers\V1\V1\AuthController;
+use App\Models\LinkedinApi;
 use Tests\TestCase;
 
 class LinkedinAuthTest extends TestCase
@@ -21,7 +21,7 @@ class LinkedinAuthTest extends TestCase
     {
         $testData = http_build_query([
             'code' => '123456789',
-            'state' => LinkedinOAuth::STATE
+            'state' => LinkedinApi::STATE
         ]);
 
         $response = $this->get('/api/v1/auth/callback?' . $testData);
@@ -35,7 +35,7 @@ class LinkedinAuthTest extends TestCase
         $testData = http_build_query([
             'error' => 'user_cancelled_login',
             'error_description' => 'error',
-            'state' => LinkedinOAuth::STATE
+            'state' => LinkedinApi::STATE
         ]);
 
         $response = $this->get('/api/v1/auth/callback?' . $testData);

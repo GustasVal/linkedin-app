@@ -1,15 +1,17 @@
 <?php
 
 
-namespace App\Http\Controllers\V1;
+namespace App\Http\Controllers\V1\V1;
 
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\V1\Controller;
 use App\Models\Jwt;
-use App\Models\LinkedinOAuth;
+use App\Models\LinkedinApi;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Lcobucci\JWT\Builder;
@@ -24,11 +26,11 @@ class AuthController extends Controller
             'response_type' => 'code',
             'client_id' => env('LINKEDIN_APP_CLIENT_ID'),
             'redirect_uri' => route('access-token'),
-            'state' => LinkedinOAuth::STATE,
+            'state' => LinkedinApi::STATE,
             'scope' => 'r_liteprofile r_emailaddress w_member_social'
         ]);
 
-        return redirect()->away(LinkedinOAuth::OAUTH_LINK . '?' . $parameters);
+        return redirect()->away(LinkedinApi::OAUTH_LINK . '?' . $parameters);
     }
 
     public function getAccessToken(Request $request): JsonResponse
@@ -39,7 +41,7 @@ class AuthController extends Controller
             return response()->json($data['error'], 400);
         }
 
-        $response = Http::asForm()->post(LinkedinOAuth::ACCESS_TOKEN_LINK, [
+        $response = Http::asForm()->post(LinkedinApi::ACCESS_TOKEN_LINK, [
             'grant_type' => 'authorization_code',
             'code' => $data['code'],
             'redirect_uri' => route('access-token'),
@@ -54,6 +56,15 @@ class AuthController extends Controller
         $accessToken = $response->json();
 
         Session::put('linkedin_access', $accessToken['access_token']);
+
+        $linkedinUser = Http::withToken($accessToken['access_token'])->get(LinkedinApi::PROFILE_LINK);
+
+        if(!DB::table('users')->where('linkedin_id', $linkedinUser['id'])->first()) {
+            $newUser = new User();
+            $newUser->linkedin_id = $linkedinUser['id'];
+            $newUser->name = $linkedinUser['localizedFirstName'];
+            $newUser->save();
+        }
 
         return response()->json([
             'jwt' => (new Jwt)->generateJwt(Session::getId()),
