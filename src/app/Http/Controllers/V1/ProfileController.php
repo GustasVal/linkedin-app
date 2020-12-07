@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\V1\V1;
+namespace App\Http\Controllers\V1;
 
-use App\Http\Controllers\V1\Controller;
+use App\Http\Controllers\Controller;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -13,7 +13,7 @@ class ProfileController extends Controller
     public function index(User $user): JsonResponse
     {
         return response()->json([
-            'data' => $user->profiles()
+            'data' => $user->profiles()->get()->toArray()
         ], 200);
     }
 

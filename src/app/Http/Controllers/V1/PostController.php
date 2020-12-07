@@ -1,22 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\V1\V1;
+namespace App\Http\Controllers\V1;
 
-use App\Http\Controllers\V1\Controller;
+use App\Http\Controllers\Controller;
 use App\Models\LinkedinApi;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Session;
 
 class PostController extends Controller
 {
     public function index(User $user): JsonResponse
     {
         return response()->json([
-            'data' => $user->posts()
+            'data' => $user->posts()->get()->toArray()
         ], 200);
     }
 

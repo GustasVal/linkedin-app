@@ -1,10 +1,10 @@
 <?php
 
 
-namespace App\Http\Controllers\V1\V1;
+namespace App\Http\Controllers\V1;
 
 
-use App\Http\Controllers\V1\Controller;
+use App\Http\Controllers\Controller;
 use App\Models\Jwt;
 use App\Models\LinkedinApi;
 use App\Models\User;

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\V1\V1;
+namespace App\Http\Controllers\V1;
 
-use App\Http\Controllers\V1\Controller;
+use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
@@ -14,7 +14,7 @@ class CommentController extends Controller
     public function index(User $user, Post $post): JsonResponse
     {
         return response()->json([
-            'data' => $post->comments()
+            'data' => $post->comments()->get()->toArray()
         ], 200);
     }
 

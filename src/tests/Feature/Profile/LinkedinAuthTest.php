@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Profile;
 
-use App\Http\Controllers\V1\V1\AuthController;
+use App\Http\Controllers\V1\AuthController;
 use App\Models\LinkedinApi;
 use Tests\TestCase;
 
