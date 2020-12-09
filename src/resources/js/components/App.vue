@@ -4,7 +4,15 @@
             v-model="drawer"
             app
         >
-            <Drawer />
+            <Drawer v-if="logged" />
+            <v-btn
+                v-else
+                href="/api/v1/auth"
+                color="primary"
+                class="mt-4 ml-4 mr-4 d-flex"
+            >
+                Login
+            </v-btn>
         </v-navigation-drawer>
 
         <v-app-bar app>
@@ -13,9 +21,7 @@
             <v-toolbar-title>Application</v-toolbar-title>
         </v-app-bar>
 
-        <v-main>
-            <!--  -->
-        </v-main>
+        <router-view></router-view>
 
         <Footer />
     </v-app>
@@ -31,5 +37,24 @@ export default {
         Drawer
     },
     data: () => ({ drawer: false }),
+    computed: {
+        logged: function () {
+            return localStorage.getItem('bearer');
+        }
+    },
+    methods: {
+
+    },
+    mounted(){
+        if (!this.logged) {
+            let url = new URL(window.location.href);
+            let jwt = url.searchParams.get("jwt");
+            if (jwt !== null) {
+                localStorage.setItem('bearer', jwt);
+                window.location = window.location.href.split("?")[0];
+                axios.defaults.headers.common['Authorization'] = `Bearer ${jwt}`;
+            }
+        }
+    }
 }
 </script>

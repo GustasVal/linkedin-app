@@ -23,7 +23,9 @@
                 </v-list-item-icon>
 
                 <v-list-item-content>
-                    <v-list-item-title>{{ item.title }}</v-list-item-title>
+                    <router-link :to='item.to'>
+                        <v-list-item-title>{{ item.title }}</v-list-item-title>
+                    </router-link>
                 </v-list-item-content>
             </v-list-item>
         </v-list>
@@ -35,8 +37,10 @@ export default {
     data () {
         return {
             items: [
-                { title: 'Home', icon: 'mdi-view-dashboard' },
-                { title: 'About', icon: 'mdi-forum' },
+                { to: '/profile', title: 'Profile', icon: 'mdi-view-dashboard' },
+                { to: '/posts', title: 'Posts', icon: 'mdi-forum' },
+                { to: '/profile-list', title: 'Profile List', icon: 'mdi-forum' },
+                { to: '/comments', title: 'Comments', icon: 'mdi-forum' },
             ],
         }
     },

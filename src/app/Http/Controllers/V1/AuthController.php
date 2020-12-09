@@ -33,7 +33,7 @@ class AuthController extends Controller
         return redirect()->away(LinkedinApi::OAUTH_LINK . '?' . $parameters);
     }
 
-    public function getAccessToken(Request $request): JsonResponse
+    public function getAccessToken(Request $request): RedirectResponse
     {
         $data = $request->all();
 
@@ -59,15 +59,20 @@ class AuthController extends Controller
 
         $linkedinUser = Http::withToken($accessToken['access_token'])->get(LinkedinApi::PROFILE_LINK);
 
-        if(!DB::table('users')->where('linkedin_id', $linkedinUser['id'])->first()) {
-            $newUser = new User();
-            $newUser->linkedin_id = $linkedinUser['id'];
-            $newUser->name = $linkedinUser['localizedFirstName'];
-            $newUser->save();
+//        $user = DB::table('users')->where('linkedin_id', $linkedinUser['id'])->first();
+        $user = User::where('linkedin_id', $linkedinUser['id'])->take(1)->get()->first();
+
+        if(!$user) {
+            $user = new User();
+            $user->linkedin_id = $linkedinUser['id'];
+            $user->name = $linkedinUser['localizedFirstName'];
+            $user->save();
         }
 
-        return response()->json([
-            'jwt' => (new Jwt)->generateJwt(Session::getId()),
-        ], 200);
+        $query = http_build_query([
+            'jwt' => (new Jwt)->generateJwt(Session::getId(), $user)
+        ]);
+
+        return redirect()->away(env('APP_URL') . '?' . $query);
     }
 }
