@@ -13,7 +13,7 @@ class CreateProfileListTable extends Migration
      */
     public function up()
     {
-        Schema::create('profile_list', function (Blueprint $table) {
+        Schema::create('profile_lists', function (Blueprint $table) {
             $table->id();
             $table->foreignId('owner_user_id');
             $table->text('list');
@@ -28,6 +28,6 @@ class CreateProfileListTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('profile_list');
+        Schema::dropIfExists('profile_lists');
     }
 }

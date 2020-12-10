@@ -47,12 +47,14 @@
                         <v-row>
                             <v-col cols="12" sm="4">
                                 <v-select
-                                    v-model="editedItem"
+                                    v-model="editedItem.list"
                                     :items="users"
+                                    item-text="name"
+                                    item-value="id"
                                     :menu-props="{ maxHeight: '400' }"
                                     label="Select"
                                     multiple
-                                    hint="Pick your favorite states"
+                                    hint="Pick users"
                                     persistent-hint
                                 ></v-select>
                             </v-col>
@@ -81,7 +83,10 @@ export default {
             items: [],
             users: [],
             dialog: false,
-            editedItem: {}
+            editedItem: {
+                id: null,
+                list: []
+            }
         }
     },
     computed: {
@@ -93,7 +98,8 @@ export default {
         }
     },
     mounted() {
-        this.loadItems()
+        this.loadItems();
+        this.loadUsers();
     },
     methods: {
         showEditDialog(item) {
@@ -122,16 +128,15 @@ export default {
                 .then((response) => {
                     // load the API response into items for datatable
                     this.items = response.data.data.map((item)=>{
+                        console.log(item);
                         return {
                             id: item.id,
-                            title: item.title,
-                            text: item.text,
+                            list: item.list,
                         }
                     })
                 }).catch((error) => {
                 console.log(error)
             })
-            console.log(this.items);
         },
         saveItem(item) {
             let method = "post"
@@ -143,6 +148,8 @@ export default {
                 method = "patch"
                 url = `/api/v1/users/${this.userId}/profile-list/${id}`
             }
+
+            item.list = JSON.stringify(item.list);
 
             axios[method](url,
                 item,
