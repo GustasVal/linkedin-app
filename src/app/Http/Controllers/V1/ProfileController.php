@@ -44,7 +44,8 @@ class ProfileController extends Controller
         $profile->save();
 
         return response()->json([
-            'data' => 'Profile has been created'
+            'data' => 'Profile has been created',
+            'id' => $profile->id
         ], 200);
     }
 

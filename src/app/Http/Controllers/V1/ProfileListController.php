@@ -13,7 +13,7 @@ class ProfileListController extends Controller
     public function index(User $user): JsonResponse
     {
         return response()->json([
-            'data' => $user->profiles()->get()->toArray()
+            'data' => $user->profilesList()->get()->toArray()
         ], 200);
     }
 

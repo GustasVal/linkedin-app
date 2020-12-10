@@ -4,6 +4,7 @@ use App\Http\Controllers\V1\AuthController;
 use App\Http\Controllers\V1\CommentController;
 use App\Http\Controllers\V1\PostController;
 use App\Http\Controllers\V1\ProfileController;
+use App\Http\Controllers\V1\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::group(['prefix' => 'v1'], function () {
+    Route::get('users', [UserController::class, 'index']);
+
     Route::group(['prefix' => 'auth'], function () {
         Route::get('', [AuthController::class, 'authorizeClient']);
         Route::get('callback', [AuthController::class, 'getAccessToken'])->name('access-token');

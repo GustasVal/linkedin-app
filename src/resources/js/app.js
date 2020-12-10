@@ -4,7 +4,7 @@ import App from './components/App';
 import Drawer from "./components/Drawer";
 import Footer from './components/Footer';
 import VueRouter from 'vue-router';
-import Profile from './components/Profile';
+import Profiles from './components/Profiles';
 import Posts from './components/Posts';
 import ProfileList from './components/ProfileList';
 import Comments from './components/Comments';
@@ -23,9 +23,9 @@ const router = new VueRouter({
             component: App
         },
         {
-            path: '/profile',
-            name: 'profile',
-            component: Profile
+            path: '/profiles',
+            name: 'profiles',
+            component: Profiles
         },
         {
             path: '/posts',
@@ -33,7 +33,7 @@ const router = new VueRouter({
             component: Posts
         },
         {
-            path: '/profile-list"',
+            path: '/profile-list',
             name: 'profile-list',
             component: ProfileList
         },

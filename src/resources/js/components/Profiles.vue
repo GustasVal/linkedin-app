@@ -1,7 +1,7 @@
 <template>
     <v-main class="container mt-8 px-1">
         <h2 class="font-weight-light mb-2">
-            Profile List
+            Profiles
         </h2>
         <v-card>
             <v-data-table
@@ -46,15 +46,18 @@
                     <v-card-text>
                         <v-row>
                             <v-col cols="12" sm="4">
-                                <v-select
-                                    v-model="editedItem"
-                                    :items="users"
-                                    :menu-props="{ maxHeight: '400' }"
-                                    label="Select"
-                                    multiple
-                                    hint="Pick your favorite states"
-                                    persistent-hint
-                                ></v-select>
+                                <v-text-field v-model="editedItem.email" label="Email"></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="8">
+                                <v-text-field v-model="editedItem.last_name" label="Lastname"></v-text-field>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="12" sm="4">
+                                <v-text-field v-model="editedItem.address" label="Address"></v-text-field>
+                            </v-col>
+                            <v-col cols="12" sm="8">
+                                <v-text-field v-model="editedItem.number" label="Number"></v-text-field>
                             </v-col>
                         </v-row>
                     </v-card-text>
@@ -75,11 +78,13 @@ export default {
         return {
             headers: [
                 { text: 'Id', value: 'id', width:"100" },
-                { text: 'List', value: 'list' },
+                { text: 'Email', value: 'email' },
+                { text: 'Lastname', value: 'last_name' },
+                { text: 'Address', value: 'address' },
+                { text: 'Number', value: 'number' },
                 { text: 'Actions', value: 'actions', sortable: false },
             ],
             items: [],
-            users: [],
             dialog: false,
             editedItem: {}
         }
@@ -100,48 +105,34 @@ export default {
             this.editedItem = item||{}
             this.dialog = !this.dialog
         },
-        loadUsers() {
-            this.users = [];
-            axios.get(`/api/v1/users`)
-                .then((response) => {
-                    // load the API response into items for datatable
-                    this.users = response.data.data.map((item)=>{
-                        return {
-                            id: item.id,
-                            name: item.name,
-                        }
-                    })
-                }).catch((error) => {
-                console.log(error);
-            })
-        },
         loadItems() {
             this.items = []
-            axios.get(`/api/v1/users/${this.userId}/profile-list`,
+            axios.get(`/api/v1/users/${this.userId}/profile`,
                 { headers: { Authorization: "Bearer " + this.token }})
                 .then((response) => {
                     // load the API response into items for datatable
                     this.items = response.data.data.map((item)=>{
                         return {
                             id: item.id,
-                            title: item.title,
-                            text: item.text,
+                            email: item.email,
+                            last_name: item.last_name,
+                            address: item.address,
+                            number: item.number
                         }
                     })
                 }).catch((error) => {
                 console.log(error)
             })
-            console.log(this.items);
         },
         saveItem(item) {
             let method = "post"
-            let url = `/api/v1/users/${this.userId}/profile-list`
+            let url = `/api/v1/users/${this.userId}/profile`
             let id = item.id
 
             if (id) {
                 // if the item has an id, we're updating an existing item
                 method = "patch"
-                url = `/api/v1/users/${this.userId}/profile-list/${id}`
+                url = `/api/v1/users/${this.userId}/profile/${id}`
             }
 
             axios[method](url,
@@ -165,7 +156,7 @@ export default {
             let id = item.id
             let idx = this.items.findIndex(item => item.id===id)
             if (confirm('Are you sure you want to delete this?')) {
-                axios.delete(`/api/v1/users/${this.userId}/profile-list/${id}`,
+                axios.delete(`/api/v1/users/${this.userId}/profile/${id}`,
                     { headers: {
                             Authorization: "Bearer " + this.token,
                             "Content-Type": "application/json"

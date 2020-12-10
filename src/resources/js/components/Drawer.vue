@@ -37,7 +37,7 @@ export default {
     data () {
         return {
             items: [
-                { to: '/profile', title: 'Profile', icon: 'mdi-view-dashboard' },
+                { to: '/profiles', title: 'Profiles', icon: 'mdi-view-dashboard' },
                 { to: '/posts', title: 'Posts', icon: 'mdi-forum' },
                 { to: '/profile-list', title: 'Profile List', icon: 'mdi-forum' },
                 { to: '/comments', title: 'Comments', icon: 'mdi-forum' },

@@ -71,7 +71,8 @@ class PostController extends Controller
         $post->save();
 
         return response()->json([
-            'data' => 'Post has been created'
+            'data' => 'Post has been created',
+            'id' => $post->id
         ], 200);
     }
 
